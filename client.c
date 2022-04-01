@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:30:33 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/03/31 21:12:16 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:24:14 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,28 @@
 static void	show_message(int pid, int flag)
 {
 	if (flag !=  2)
-		exit();
-	if ()
+	{
+		print_msg("Bad amount of arguments");
+		exit(0);
+	}
+	else
+	{
+		print_msg("My PID is: \t");
+		print_nbr(getpid());
+		print_msg("\n");
+	}
 }
 
-int	bit_sender(char c, int i, int pid)
+
+void	bit_sender(char c, int i, int pid)
 {
-	if (c & (1 << i--))
-		kill(SIGUSR1, pid);
-	else
-		kill(SIGUSR2, pid);
-	pause();
+
+}
+
+static void	listener(int signo, siginfo_t *info, void *context)
+{
+	static char	caracter;
+
 }
 
 int main(int argc, char **argv)

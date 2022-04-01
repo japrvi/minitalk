@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:35:55 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/03/31 21:12:18 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/01 21:24:11 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,43 +17,50 @@ static char	buff[12289];
 void	show_message()
 {
 	print_msg("Server's PID is: \t");
-	printr_nbr(getpid());
+	print_nbr(getpid());
 	print_msg(".\n");
 }
 
-void	bit_receiver(int signo, siginfo_t *info, void *context)
+void	bit_receiver(int signo, pid_t pid)
 {
-	static char	c = 0;
-	static int	i = 0;
-	static int	counter = 0;
+	static char caracter;
+	static char counter;
+	static int	pos;
 
-	c |= (SIGUSR1 == signo);
-	if (++i == 8)
+	caracter |= (signo == SIGUSR1);
+	if (++counter == 8)
 	{
-		buff[counter++] = c;
-		if (c == 0)
+		buff[pos++] = caracter;
+		if (caracter == 0)
 		{
+			kill(pid, SIGUSR2);
+			buff[pos - 1] = '\n';
 			print_msg(buff);
-			kill(info->si_signo, SIGUSR2);
 			clean(buff);
+			pos = 0;
 		}
-		else
-			kill(info->si_signo, SIGUSR1);
-		c = 0;
-		i = 0;
+		caracter = 0;
+		counter = 0;
 	}
-	else 
-		c <<= 1;
+	else
+		caracter <<= 1;
 }
 
-int main(int argc, char **argv)
+void	listen(int signo, siginfo_t *info, void *context)
+{
+	(ucontext_t *) context;
+	bit_receiver(signo, info->si_pid);
+	kill(SIGUSR1, info->si_pid);
+}
+
+int main()
 {
 	struct sigaction	listener;
 
 	listener.sa_flags = SA_SIGINFO;
-	listener.sa_sigaction = &bit_receiver;
+	listener.sa_sigaction = listen;
 	show_message();
+
 	while(1)
 		pause();
-	exit();
 }
