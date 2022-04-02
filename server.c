@@ -12,8 +12,6 @@
 
 #include "minitalk.h"
 
-static char	buff[12289];
-
 void	show_message()
 {
 	print_msg("Server's PID is: \t");
@@ -21,7 +19,7 @@ void	show_message()
 	print_msg(".\n");
 }
 
-void	bit_receiver(int signo, pid_t pid)
+void	bit_receiver(int signo, pid_t pid, char *buff)
 {
 	static char caracter;
 	static char counter;
@@ -48,8 +46,10 @@ void	bit_receiver(int signo, pid_t pid)
 
 void	listen(int signo, siginfo_t *info, void *context)
 {
+	static char	buff[12289];
+
 	(ucontext_t *) context;
-	bit_receiver(signo, info->si_pid);
+	bit_receiver(signo, info->si_pid, buff);
 	kill(SIGUSR1, info->si_pid);
 }
 
@@ -60,7 +60,8 @@ int main()
 	listener.sa_flags = SA_SIGINFO;
 	listener.sa_sigaction = listen;
 	show_message();
-
+	sigaction(SIGUSR1, &listener, 0);
+	sigaction(SIGUSR2, &listener, 0);
 	while(1)
 		pause();
 }

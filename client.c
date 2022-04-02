@@ -12,7 +12,9 @@
 
 #include "minitalk.h"
 
-static void	show_message(int pid, int flag)
+static char	*msg;
+
+static void	show_message(int flag)
 {
 	if (flag !=  2)
 	{
@@ -28,28 +30,47 @@ static void	show_message(int pid, int flag)
 }
 
 
-void	bit_sender(char c, int i, int pid)
+void	bit_sender(char c, char des, pid_t pid)
 {
-
+	if (c & (1 << des))
+		kill(SIGUSR1, pid);
+	else
+		kill(SIGUSR2, pid);
+	pause();
 }
 
-static void	listener(int signo, siginfo_t *info, void *context)
+static void	listen(int signo, siginfo_t *info, void *context)
 {
-	static char	caracter;
+	static char	counter;
+	static int	pos;
 
+	if (signo == SIGUSR1)
+	{
+		if (info != NULL)
+			bit_sender(msg[pos], counter, info->si_pid);
+		else
+			bit_sender(msg[pos], counter, *((pid_t *) context));
+		if (++counter == 8)
+		{
+			pos++;
+			counter = 0;
+		}
+	}
+	else
+		exit(0);
 }
 
 int main(int argc, char **argv)
 {
-	pid_t			pid;
-	char			*str;
-	static int		i;
+	pid_t				pid;
+	struct sigaction	listener;
 
+	listener.sa_flags = SA_SIGINFO;
+	listener.sa_sigaction = listen;
 	pid = (pid_t) atou(argv[1]);
-	str = argv[2];
-	while (*str)
-	{
-		bit_sender(*str, &i, pid);
-		str++;
-	}
+	msg = argv[2];
+	show_message(argc);
+	sigaction(SIGUSR1, &listener, 0);
+	sigaction(SIGUSR2, &listener, 0);
+	listen(SIGUSR1, NULL, &pid);
 }
