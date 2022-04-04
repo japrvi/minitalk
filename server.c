@@ -41,16 +41,21 @@ void	bit_receiver(int signo, pid_t pid, char *buff)
 		counter = 0;
 	}
 	else
+	{
 		caracter <<= 1;
+	}
+	printf("r");
 }
 
 void	listen(int signo, siginfo_t *info, void *context)
 {
 	static char	buff[12289];
-
-	(ucontext_t *) context;
+	
+	if (context)
+		context = NULL;
 	bit_receiver(signo, info->si_pid, buff);
-	kill(SIGUSR1, info->si_pid);
+	printf("Recibido\n");
+	printf("%d\n", kill(SIGUSR1, info->si_pid));
 }
 
 int main()

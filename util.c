@@ -50,16 +50,16 @@ void	clean(char *buff)
 	}
 }
 
-unsigned int	atou(char *str)
+int	atou(char *str)
 {
 	size_t			i;
-	unsigned int	res;
+	int				res;
 	
 	i = 0;
 	res = 0;
 	while(str[i])
 	{
-		res += str[i] - '0';
+		res = res * 10 + (str[i] - '0');
 		i++;
 	}
 	return (res);
