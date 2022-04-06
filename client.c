@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:30:33 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/05 20:44:03 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/06 19:01:59 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ static void	show_message(int flag)
 
 void	bit_sender(char c, char des, pid_t pid)
 {
+	printf("r\n");
 	if (c & (1 << des))
 		kill(pid, SIGUSR1);
 	else
@@ -43,7 +44,6 @@ void	listen(int signo, siginfo_t *info, void *context)
 	static char	counter;
 	static int	pos;
 
-	printf("r");
 	if (signo == SIGUSR1)
 	{
 		if (info != NULL)

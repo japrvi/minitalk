@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:35:55 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/05 20:31:12 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/06 19:30:01 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,12 @@ void	bit_receiver(int signo, pid_t pid, char *buff)
 	if (++counter == 8)
 	{
 		buff[pos++] = caracter;
-		if (caracter == 0)
+		if (caracter == '\0')
 		{
-			kill(pid, SIGUSR2);
-			buff[pos - 1] = '\n';
 			print_msg(buff);
-			clean(buff);
 			pos = 0;
+			kill(pid, SIGUSR2);
+			return ;
 		}
 		caracter = 0;
 		counter = 0;
@@ -45,20 +44,19 @@ void	bit_receiver(int signo, pid_t pid, char *buff)
 	else
 	{
 		caracter <<= 1;
+		kill(pid, SIGUSR1);
 	}
-	printf("r");
 }
 
-void	listen(int signo, siginfo_t *info, void *context)
+void	listen(int signo, siginfo_t *info, __attribute((unused)) void *context)
 {
 	static char	buff[12289];
 	int errno;
 	
-	if (context)
-		context = NULL;
 	bit_receiver(signo, info->si_pid, buff);
-	printf("Recibido %d\n", info->si_pid);
-	printf("%d\n", kill(info->si_pid, SIGUSR1));
+	//printf("Recibido %d\n", info->si_pid);
+	//printf("h%s", buff);
+	//printf("%d\n", kill(info->si_pid, SIGUSR1));
 	//printf("%s\n", strerror(errno));
 }
 
