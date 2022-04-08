@@ -6,13 +6,13 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:30:33 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/06 19:01:59 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/08 20:06:06 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static char	*msg;
+char	*msg;
 
 static void	show_message(int flag)
 {
@@ -33,10 +33,11 @@ static void	show_message(int flag)
 void	bit_sender(char c, char des, pid_t pid)
 {
 	printf("r\n");
-	if (c & (1 << des))
+	if (c & (1 << (7 - des)))
 		kill(pid, SIGUSR1);
 	else
 		kill(pid, SIGUSR2);
+	printf("%c, %d", c, des);
 }
 
 void	listen(int signo, siginfo_t *info, void *context)
@@ -55,9 +56,8 @@ void	listen(int signo, siginfo_t *info, void *context)
 			pos++;
 			counter = 0;
 		}
-		pause();
 	}
-	else if (signo  == SIGUSR2)
+	else
 		exit(0);
 }
 
@@ -69,9 +69,12 @@ int main(int argc, char **argv)
 	show_message(argc);
 	listener.sa_flags = SA_SIGINFO;
 	listener.sa_sigaction = listen;
-	pid = (pid_t) atou(argv[1]);
+	pid = atou(argv[1]);
 	msg = argv[2];
+	printf("%s\n", msg);
 	sigaction(SIGUSR1, &listener, 0);
 	sigaction(SIGUSR2, &listener, 0);
 	listen(SIGUSR1, NULL, &pid);
+	while(1)
+		pause();
 }

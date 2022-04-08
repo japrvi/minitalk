@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:35:55 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/06 19:30:01 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/08 20:09:05 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,37 +21,44 @@ void	show_message()
 	print_msg(".\n");
 }
 
-void	bit_receiver(int signo, pid_t pid, char *buff)
+void	bit_receiver(int signo, pid_t pid, volatile char *buff)
 {
-	static char caracter;
-	static char counter;
-	static int	pos;
+	volatile static char caracter;
+	volatile static char counter;
+	volatile static int	pos;
 
-	caracter |= (signo == SIGUSR1);
-	if (++counter == 8)
+	if (signo == SIGUSR1)
 	{
-		buff[pos++] = caracter;
-		if (caracter == '\0')
+		caracter |= (1 << (7-counter));
+	}
+	counter++;
+	if (counter == 8)
+	{
+		buff[pos] = caracter;
+		counter = 0;
+		caracter = 0;
+		if (!buff[pos])
 		{
-			print_msg(buff);
+			fprintf(stderr, "%s", buff);
 			pos = 0;
 			kill(pid, SIGUSR2);
 			return ;
 		}
-		caracter = 0;
-		counter = 0;
+		pos++;
 	}
-	else
-	{
-		caracter <<= 1;
-		kill(pid, SIGUSR1);
-	}
+	kill(pid, SIGUSR1);
 }
 
 void	listen(int signo, siginfo_t *info, __attribute((unused)) void *context)
 {
-	static char	buff[12289];
-	int errno;
+	volatile static char	buff[12289];
+	volatile static _Bool once;
+
+	if (!once)
+	{
+	fprintf(stderr,"%s",buff);
+	once = 1;
+	}
 	
 	bit_receiver(signo, info->si_pid, buff);
 	//printf("Recibido %d\n", info->si_pid);

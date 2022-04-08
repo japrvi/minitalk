@@ -1,18 +1,18 @@
 SERVER	=	server
 CLIENT	=	client
 CC		=	gcc
-FLAGS	=	 -Wall -Werror -Wextra
+CFLAGS	=	 -Wall -Werror -Wextra -glldb -O0
 
 all : $(SERVER) $(CLIENT)
 
 $(SERVER) : server.o util.o
-			$(CC) server.o util.o -o $@
+			$(CC) $(CFLAGS) server.o util.o -o $@
 
 $(CLIENT) : client.o util.o
-			$(CC) client.o util.o -o $@
+			$(CC) $(CFLAG) client.o util.o -o $@
 
 %.o : %.c
-	$(CC) $(FLAGS) $< -c 
+	$(CC) $(CFLAGS) $< -c 
 
 clean :
 		rm -rf *.o
