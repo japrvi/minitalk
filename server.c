@@ -6,13 +6,11 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:35:55 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/10 18:59:16 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/10 20:05:26 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
-/*#include <sys/errno.h>
-#include <string.h>*/
 
 void	show_message(void)
 {
@@ -37,7 +35,6 @@ void	bit_receiver(int signo, pid_t pid, volatile char *buff)
 		caracter = 0;
 		if (!buff[pos])
 		{
-			fprintf(stderr, "%s", buff);
 			pos = 0;
 			kill(pid, SIGUSR2);
 			return ;
