@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 14:14:02 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/05 20:34:15 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/10 17:30:47 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 # include <signal.h>
 # include <stdio.h>
 
-void	print_msg (char *msg);
-void	print_nbr (unsigned int nbr);
-void	clean (char *buff);
+void	print_msg(char *msg);
+void	print_nbr(unsigned int nbr);
+void	clean(char *buff);
 int		atou(char *str);
 
 #endif

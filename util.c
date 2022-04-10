@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/03 19:13:41 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/03 20:37:36 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/10 18:59:49 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ int	atou(char *str)
 {
 	size_t			i;
 	int				res;
-	
+
 	i = 0;
 	res = 0;
-	while(str[i])
+	while (str[i])
 	{
 		res = res * 10 + (str[i] - '0');
 		i++;
