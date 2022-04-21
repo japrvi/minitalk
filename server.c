@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 18:35:55 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/10 20:05:26 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/21 17:14:47 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ void	show_message(void)
 	print_msg(".\n");
 }
 
-void	bit_receiver(int signo, pid_t pid, volatile char *buff)
+void	bit_receiver(int signo, pid_t pid, char *buff)
 {
-	volatile static char	caracter;
-	volatile static char	counter;
-	volatile static int		pos;
+	static char	caracter;
+	static char	counter;
+	static int	pos;
 
 	if (signo == SIGUSR1)
 		caracter |= (1 << (7 - counter));
@@ -37,6 +37,7 @@ void	bit_receiver(int signo, pid_t pid, volatile char *buff)
 		{
 			pos = 0;
 			kill(pid, SIGUSR2);
+			print_msg(buff);
 			return ;
 		}
 		pos++;
@@ -46,7 +47,7 @@ void	bit_receiver(int signo, pid_t pid, volatile char *buff)
 
 void	listen(int signo, siginfo_t *info, __attribute((unused)) void *context)
 {
-	volatile static char	buff[10000000];
+	static char	buff[10000000];
 
 	bit_receiver(signo, info->si_pid, buff);
 }

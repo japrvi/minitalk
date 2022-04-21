@@ -6,7 +6,7 @@
 /*   By: jpozuelo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 14:14:02 by jpozuelo          #+#    #+#             */
-/*   Updated: 2022/04/10 17:30:47 by jpozuelo         ###   ########.fr       */
+/*   Updated: 2022/04/21 17:08:47 by jpozuelo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <signal.h>
-# include <stdio.h>
 
 void	print_msg(char *msg);
 void	print_nbr(unsigned int nbr);
